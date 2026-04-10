@@ -14,7 +14,9 @@ async def get_dashboard_summary(
     current_user: dict = Depends(get_current_user)
 ) -> Dict[str, Any]:
     
-    tenant_id = getattr(current_user, "tenant_id", "default_tenant") or "default_tenant"
+    tenant_id = getattr(current_user, "tenant_id", None)
+    if not tenant_id:
+        raise HTTPException(status_code=400, detail="Could not resolve tenant")
     
     if month is None:
         month = datetime.now().month
